@@ -11,8 +11,8 @@ import java.time.LocalDate;
 @Builder
 public class OrderDto {
     private long id;
-    private LocalDate orderDate;
-    private int days;
+    private LocalDate beginDate;
+    private LocalDate endDate;
     private double price;
     private long hotelId;
     private long roomId;

@@ -35,6 +35,9 @@ public class Room {
     @OneToMany(mappedBy = "room")
     private List<Review> reviews;
 
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Order> orders;
+
     public void addReview(Review review) {
         if (reviews == null)
             reviews = new ArrayList<>();

@@ -12,9 +12,8 @@ public class OrderDtoUtil {
     public OrderDto toDto(Order order) {
         OrderDto orderDto = OrderDto.builder()
                 .id(order.getId())
-                .orderDate(order.getOrderDate())
-                .price(order.getPrice())
-                .days(order.getDays())
+                .beginDate(order.getBeginDate())
+                .endDate(order.getEndDate())
                 .hotelId(order.getRoom().getHotel().getId())
                 .roomId(order.getRoom().getId())
                 .build();
@@ -25,9 +24,8 @@ public class OrderDtoUtil {
     public Order toEntity(OrderDto orderDto) {
         Order order = new Order();
         order.setId(orderDto.getId());
-        order.setOrderDate(orderDto.getOrderDate());
-        order.setPrice(orderDto.getPrice());
-        order.setDays(orderDto.getDays());
+        order.setBeginDate(orderDto.getBeginDate());
+        order.setEndDate(orderDto.getEndDate());
 
         return order;
     }

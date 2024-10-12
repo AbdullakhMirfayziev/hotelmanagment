@@ -17,14 +17,11 @@ public class Order {
     @Column(name = "id")
     private long id;
 
-    @Column(name = "order_date")
-    private LocalDate orderDate;
+    @Column(name = "begin_date")
+    private LocalDate beginDate;
 
-    @Column(name = "days")
-    private int days;
-
-    @Column(name = "price")
-    private double price;
+    @Column(name = "end_date")
+    private LocalDate endDate;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "user_id")
