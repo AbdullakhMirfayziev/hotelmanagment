@@ -22,6 +22,8 @@ public class HotelServiceImpl implements HotelService {
     @Override
     public void addHotel(HotelDto hotelDto) {
         Hotel hotel = dtoUtil.toEntity(hotelDto);
+
+        hotelRepository.save(hotel);
     }
 
     @Override

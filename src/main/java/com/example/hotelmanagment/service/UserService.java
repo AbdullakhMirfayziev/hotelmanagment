@@ -8,10 +8,11 @@ import java.util.List;
 
 @Component
 public interface UserService {
-    void signUp(UserDto userDto);
+    String signUp(UserDto userDto);
     void signIn(String email, String password);
     List<UserDto> getAllUsers();
-    UserDto getUserById(int id);
+    UserDto getUserById(long id);
     void updateUser(UserDto userDto);
-    void deleteUser(int id);
+    void deleteUser(long id);
+    boolean verifyEmail(String email, String code);
 }
