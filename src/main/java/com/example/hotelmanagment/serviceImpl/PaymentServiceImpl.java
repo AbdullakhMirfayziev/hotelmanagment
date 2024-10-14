@@ -8,6 +8,9 @@ import com.example.hotelmanagment.repository.OrderRepository;
 import com.example.hotelmanagment.repository.PaymentRepository;
 import com.example.hotelmanagment.service.PaymentService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -65,5 +68,14 @@ public class PaymentServiceImpl implements PaymentService {
         Payment payment = paymentRepository.findByOrderId(orderId).orElseThrow(()->new RuntimeException("Payment not found"));
 
         return dtoUtil.toDto(payment);
+    }
+
+    @Override
+    public Page<PaymentDto> getPaymentsWithPageable(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Payment> payments = paymentRepository.findAll(pageable);
+
+        return payments.map(dtoUtil::toDto);
     }
 }

@@ -8,6 +8,9 @@ import com.example.hotelmanagment.repository.HotelRepository;
 import com.example.hotelmanagment.repository.RoomRepository;
 import com.example.hotelmanagment.service.HotelService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -57,5 +60,14 @@ public class HotelServiceImpl implements HotelService {
     @Override
     public void deleteHotel(long id) {
         hotelRepository.deleteById(id);
+    }
+
+    @Override
+    public Page<HotelDto> getHotels(int size, int page) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Hotel> hotels = hotelRepository.findAll(pageable);
+
+        return hotels.map(dtoUtil::toDto);
     }
 }

@@ -1,8 +1,8 @@
 package com.example.hotelmanagment.service;
 
 import com.example.hotelmanagment.dto.RoomDto;
-import com.example.hotelmanagment.entity.Room;
 import org.springframework.stereotype.Component;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -14,4 +14,5 @@ public interface RoomService {
     List<RoomDto> getAllRooms();
     RoomDto getRoomById(long id);
     List<RoomDto> getAllRoomsByHotelId(long hotelId);
+    Page<RoomDto> getRoomsByPageAndSize(int page, int size);
 }

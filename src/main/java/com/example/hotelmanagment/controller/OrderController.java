@@ -3,11 +3,15 @@ package com.example.hotelmanagment.controller;
 import com.example.hotelmanagment.dto.OrderDto;
 import com.example.hotelmanagment.service.OrderService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/orders")
@@ -16,14 +20,25 @@ public class OrderController {
     private OrderService orderService;
 
     @GetMapping
-    public ResponseEntity<?> getAllOrders() {
-        List<OrderDto> orders = orderService.getAllOrders();
+    public ResponseEntity<?> getAllOrders(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "5") int size) {
+        if (page < 1 || size <= 0) {
+            return ResponseEntity.badRequest().body("Invalid page or size parameters");
+        }
+
+        Page<OrderDto> orders = orderService.getOrdersWithPageable(page - 1, size);
 
         if (orders.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
 
-        return ResponseEntity.ok(orders);
+        Map<String, Object> response = new HashMap<>();
+        response.put("orders", orders.getContent());
+        response.put("currentPage", orders.getNumber());
+        response.put("totalItems", orders.getTotalElements());
+        response.put("totalPages", orders.getTotalPages());
+
+        return ResponseEntity.ok(response);
+
     }
 
     @GetMapping("{id}")

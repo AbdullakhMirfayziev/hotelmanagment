@@ -7,9 +7,13 @@ import com.example.hotelmanagment.repository.MailCodeRepository;
 import com.example.hotelmanagment.repository.OrderRepository;
 import com.example.hotelmanagment.repository.ReviewRepository;
 import com.example.hotelmanagment.repository.UserRepository;
-import com.example.hotelmanagment.security.JwtService;
+import com.example.hotelmanagment.response.AuthenticationRequest;
+import com.example.hotelmanagment.response.AuthenticationResponse;
+import com.example.hotelmanagment.jwt.JwtService;
 import com.example.hotelmanagment.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,7 +33,8 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
     private MailCodeRepository mailCodeRepository;
     private EmailService emailService;
-
+    private CustomUserDetailsService userDetailsService;
+    private AuthenticationManager authenticationManager;
 
 
     @Override
@@ -49,7 +54,13 @@ public class UserServiceImpl implements UserService {
         role.setUser(user);
         user.setRole(role);
 
+        String token = jwtService.generateToken(user);
+
+        user.setVerificationToken(token);
+        user.setVerificationTokenExpiryDate(LocalDateTime.now().plusHours(24));
+
         userRepository.save(user);
+
 
         String verificationCode = generateVerificationCode();
 
@@ -64,7 +75,7 @@ public class UserServiceImpl implements UserService {
         // Send verification email
         emailService.sendVerificationEmail(user.getEmail(), verificationCode);
 
-        return jwtService.generateToken(user);
+        return token;
 
     }
 
@@ -129,6 +140,21 @@ public class UserServiceImpl implements UserService {
         }
 
         return false;
+    }
+
+    @Override
+    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
+        UserDetails user = userDetailsService.loadUserByUsername(request.getEmail());
+        String jwtToken = jwtService.generateToken(user);
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build();
     }
 
 

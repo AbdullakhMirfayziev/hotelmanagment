@@ -2,6 +2,8 @@ package com.example.hotelmanagment.service;
 
 import com.example.hotelmanagment.dto.UserDto;
 import com.example.hotelmanagment.entity.User;
+import com.example.hotelmanagment.response.AuthenticationRequest;
+import com.example.hotelmanagment.response.AuthenticationResponse;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,4 +17,5 @@ public interface UserService {
     void updateUser(UserDto userDto);
     void deleteUser(long id);
     boolean verifyEmail(String email, String code);
+    AuthenticationResponse authenticate(AuthenticationRequest request);
 }

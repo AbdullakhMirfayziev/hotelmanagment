@@ -17,4 +17,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByReviewId(@Param("reviewId") long reviewId);
 
     Optional<User> findByEmail(String email);
+
+    Optional<User> findByResetToken(String token);
 }

@@ -1,7 +1,12 @@
 package com.example.hotelmanagment.controller;
 
 import com.example.hotelmanagment.dto.UserDto;
+import com.example.hotelmanagment.response.AuthenticationRequest;
+import com.example.hotelmanagment.response.AuthenticationResponse;
+import com.example.hotelmanagment.response.ForgotPasswordRequest;
+import com.example.hotelmanagment.response.ResetPasswordRequest;
 import com.example.hotelmanagment.service.UserService;
+import com.example.hotelmanagment.serviceImpl.EmailService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private UserService userService;
+    private EmailService emailService;
 
     @PostMapping("/signup")
     public ResponseEntity<String> signUp(@Valid @RequestBody UserDto user) {
@@ -28,5 +34,22 @@ public class AuthController {
         } else {
             return ResponseEntity.badRequest().body("Invalid verification code");
         }
+    }
+
+    @PostMapping("/authenticate")
+    public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
+        return ResponseEntity.ok(userService.authenticate(request));
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestBody ForgotPasswordRequest request) {
+        emailService.initiatePasswordReset(request.getEmail());
+        return ResponseEntity.ok("Password reset link sent to your email");
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequest request) {
+        emailService.resetPassword(request.getToken(), request.getNewPassword());
+        return ResponseEntity.ok("Password reset successfully");
     }
 }

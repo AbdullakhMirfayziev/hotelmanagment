@@ -2,6 +2,7 @@ package com.example.hotelmanagment.service;
 
 import com.example.hotelmanagment.dto.ReviewDto;
 import com.example.hotelmanagment.entity.Review;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,5 +15,6 @@ public interface ReviewService {
     void deleteReviewById(long id);
     void updateReview(ReviewDto reviewDto);
     List<ReviewDto> getByRoomId(long roomId);
+    Page<ReviewDto> getReviewsWithPageable(int size, int page);
 
 }

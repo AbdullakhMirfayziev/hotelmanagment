@@ -1,4 +1,4 @@
-package com.example.hotelmanagment.security;
+package com.example.hotelmanagment.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

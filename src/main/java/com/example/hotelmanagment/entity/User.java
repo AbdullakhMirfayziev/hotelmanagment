@@ -8,6 +8,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -38,6 +39,18 @@ public class User implements Serializable, UserDetails {
 
     @Column(name = "enabled")
     private boolean enabled = false;
+
+    @Column(name = "reset_token")
+    private String resetToken;
+
+    @Column(name = "reset_token_expiryDate")
+    private LocalDateTime resetTokenExpiryDate;
+
+    @Column(name = "verification_token")
+    private String verificationToken;
+
+    @Column(name = "veset_token_expiryDate")
+    private LocalDateTime verificationTokenExpiryDate;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Order> orders;

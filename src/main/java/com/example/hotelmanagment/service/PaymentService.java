@@ -2,6 +2,7 @@ package com.example.hotelmanagment.service;
 
 import com.example.hotelmanagment.dto.PaymentDto;
 import com.example.hotelmanagment.entity.Payment;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,4 +15,5 @@ public interface PaymentService {
     List<PaymentDto> getAllPayments();
     PaymentDto getPaymentById(long id);
     PaymentDto getPaymentByOrderId(long orderId);
+    Page<PaymentDto> getPaymentsWithPageable(int page, int size);
 }

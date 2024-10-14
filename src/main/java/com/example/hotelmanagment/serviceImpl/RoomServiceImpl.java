@@ -10,7 +10,11 @@ import com.example.hotelmanagment.repository.ReviewRepository;
 import com.example.hotelmanagment.repository.RoomRepository;
 import com.example.hotelmanagment.service.RoomService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.*;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -28,9 +32,9 @@ public class RoomServiceImpl implements RoomService {
 
         // adding room to hotel
         Room room = dtoUtil.toEntity(roomDto);
-        hotel.addRoom(room);
+        room.setHotel(hotel);
 
-        hotelRepository.save(hotel);
+        roomRepository.save(room);
     }
 
     @Override
@@ -76,5 +80,14 @@ public class RoomServiceImpl implements RoomService {
         List<Room> rooms = roomRepository.findByHotelId(hotelId);
 
         return dtoUtil.toDto(rooms);
+    }
+
+    @Override
+    public Page<RoomDto> getRoomsByPageAndSize(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Room> rooms = roomRepository.findAll(pageable);
+
+        return rooms.map(dtoUtil::toDto);
     }
 }

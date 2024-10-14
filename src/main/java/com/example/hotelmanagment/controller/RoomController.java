@@ -8,8 +8,11 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/rooms")
@@ -20,14 +23,25 @@ public class RoomController {
     private UserService userService;
 
     @GetMapping
-    public ResponseEntity<?> getAllRooms() {
-        List<RoomDto> rooms = roomService.getAllRooms();
+    public ResponseEntity<?> getAllRooms(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "5") int size) {
+        if (page < 1 || size <= 0) {
+            return ResponseEntity.badRequest().body("Invalid page or size parameters");
+        }
 
-        if (rooms.isEmpty()) {
+        Page<RoomDto> roomPage = roomService.getRoomsByPageAndSize(page - 1, size);
+
+        if (roomPage.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
 
-        return ResponseEntity.ok(rooms);
+        // Create a custom response object
+        Map<String, Object> response = new HashMap<>();
+        response.put("rooms", roomPage.getContent());
+        response.put("currentPage", roomPage.getNumber());
+        response.put("totalItems", roomPage.getTotalElements());
+        response.put("totalPages", roomPage.getTotalPages());
+
+        return ResponseEntity.ok(response);
     }
 
 

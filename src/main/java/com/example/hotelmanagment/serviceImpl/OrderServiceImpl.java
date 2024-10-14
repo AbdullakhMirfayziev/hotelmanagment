@@ -10,6 +10,9 @@ import com.example.hotelmanagment.repository.RoomRepository;
 import com.example.hotelmanagment.repository.UserRepository;
 import com.example.hotelmanagment.service.OrderService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -99,5 +102,14 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderDto> getOrderByUserId(long userId) {
         List<Order> order = orderRepository.findByUserId(userId);
         return dtoUtil.toDto(order);
+    }
+
+    @Override
+    public Page<OrderDto> getOrdersWithPageable(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Order> orders = orderRepository.findAll(pageable);
+
+        return orders.map(dtoUtil::toDto);
     }
 }

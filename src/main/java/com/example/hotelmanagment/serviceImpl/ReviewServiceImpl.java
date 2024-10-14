@@ -10,6 +10,9 @@ import com.example.hotelmanagment.repository.RoomRepository;
 import com.example.hotelmanagment.repository.UserRepository;
 import com.example.hotelmanagment.service.ReviewService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -80,5 +83,14 @@ public class ReviewServiceImpl implements ReviewService {
         List<Review> reviews = reviewRepository.findByRoomId(roomId);
 
         return dtoUtil.toDto(reviews);
+    }
+
+    @Override
+    public Page<ReviewDto> getReviewsWithPageable(int size, int page) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Review> reviews = reviewRepository.findAll(pageable);
+
+        return reviews.map(dtoUtil::toDto);
     }
 }
