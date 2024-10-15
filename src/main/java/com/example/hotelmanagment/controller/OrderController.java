@@ -54,9 +54,14 @@ public class OrderController {
 
     @PostMapping("/users/{userId}/rooms/{roomId}")
     public ResponseEntity<?> addOrder(@PathVariable long userId, @PathVariable long roomId, @RequestBody OrderDto orderDto) {
-        orderService.createOrder(orderDto, userId, roomId);
+        try {
+            orderService.createOrder(orderDto, userId, roomId);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body("Order added successfully");
+            return ResponseEntity.status(HttpStatus.CREATED).body("Order added successfully");
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
     }
 
     @PutMapping

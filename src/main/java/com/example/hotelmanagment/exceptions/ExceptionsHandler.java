@@ -16,7 +16,7 @@ public class ExceptionsHandler {
 //    @ResponseBody(HttpStatus.FORBIDDEN)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleException(Exception e) {
-        logger.error("403 error occurred: " + e.getMessage());
+        logger.error("403 error occurred: {}", e.getMessage());
 
         return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
     }

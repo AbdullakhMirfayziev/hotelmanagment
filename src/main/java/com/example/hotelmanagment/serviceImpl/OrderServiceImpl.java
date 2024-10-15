@@ -16,6 +16,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -39,15 +41,21 @@ public class OrderServiceImpl implements OrderService {
             Order order = orders.getFirst();
             // checking room isn't already booked
             if(order.getEndDate().isBefore(orderDto.getBeginDate())) {
-                Order newOrder = dtoUtil.toEntity(orderDto);
+                Order newOrder = new Order();
+                newOrder.setBeginDate(LocalDate.now());
+                newOrder.setEndDate(orderDto.getEndDate());
                 newOrder.setUser(user);
                 newOrder.setRoom(room);
                 orderRepository.save(newOrder);
+            } else {
+                throw new RuntimeException("Room is already booked");
             }
         } else {
-            Order newOrder = dtoUtil.toEntity(orderDto);
+            Order newOrder = new Order();
             newOrder.setUser(user);
             newOrder.setRoom(room);
+            newOrder.setBeginDate(LocalDate.now());
+            newOrder.setEndDate(orderDto.getEndDate());
             orderRepository.save(newOrder);
         }
 
