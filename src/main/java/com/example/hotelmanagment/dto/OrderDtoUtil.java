@@ -14,7 +14,6 @@ public class OrderDtoUtil {
                 .id(order.getId())
                 .beginDate(order.getBeginDate())
                 .endDate(order.getEndDate())
-                .hotelId(order.getRoom().getHotel().getId())
                 .roomId(order.getRoom().getId())
                 .build();
 

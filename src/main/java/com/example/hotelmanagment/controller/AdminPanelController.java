@@ -7,6 +7,10 @@ import com.example.hotelmanagment.dto.UserDto;
 import com.example.hotelmanagment.service.HotelService;
 import com.example.hotelmanagment.service.OrderService;
 import com.example.hotelmanagment.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
@@ -25,6 +29,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/v1/admin")
 @AllArgsConstructor
+@Tag(name = "Admin Panel", description = "Operations for exporting data in CSV format")
 public class AdminPanelController {
     private UserService userService;
     private CsvExportUtil csvExportUtil;
@@ -32,7 +37,11 @@ public class AdminPanelController {
     private OrderService orderService;
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
-
+    @Operation(summary = "Export users data", description = "Exports all users' data in CSV format")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully exported users data"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @GetMapping("/export/users")
     public ResponseEntity<?> exportUsers() throws IOException {
         List<UserDto> users = userService.getAllUsers();
@@ -58,12 +67,17 @@ public class AdminPanelController {
                 .body(resource);
     }
 
+    @Operation(summary = "Export hotels data", description = "Exports all hotels' data in CSV format")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully exported hotels data"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @GetMapping("/export/hotels")
     public ResponseEntity<?> exportHotels() throws IOException {
         List<HotelDto> hotels = hotelService.getAllHotels();
 
         List<String> headers = Arrays.asList("ID", "Name", "Address", "Phone");
-        List<List<String> > data = hotels.stream()
+        List<List<String>> data = hotels.stream()
                 .map(hotel -> Arrays.asList(
                         String.valueOf(hotel.getId()),
                         hotel.getName(),
@@ -83,12 +97,17 @@ public class AdminPanelController {
                 .body(resource);
     }
 
+    @Operation(summary = "Export orders data", description = "Exports all orders' data in CSV format")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully exported orders data"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @GetMapping("/export/orders")
     public ResponseEntity<?> exportOrders() throws IOException {
         List<OrderDto> orders = orderService.getAllOrders();
 
         List<String> headers = Arrays.asList("ID", "Begin date", "End date", "Room ID");
-        List<List<String> > data = orders.stream()
+        List<List<String>> data = orders.stream()
                 .map(order -> Arrays.asList(
                         String.valueOf(order.getId()),
                         order.getBeginDate().format(DATE_FORMATTER),

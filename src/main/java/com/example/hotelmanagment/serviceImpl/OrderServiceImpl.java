@@ -5,6 +5,7 @@ import com.example.hotelmanagment.dto.OrderDtoUtil;
 import com.example.hotelmanagment.entity.Order;
 import com.example.hotelmanagment.entity.Room;
 import com.example.hotelmanagment.entity.User;
+import com.example.hotelmanagment.exceptions.RoomAlreadyBookedException;
 import com.example.hotelmanagment.repository.OrderRepository;
 import com.example.hotelmanagment.repository.RoomRepository;
 import com.example.hotelmanagment.repository.UserRepository;
@@ -48,7 +49,7 @@ public class OrderServiceImpl implements OrderService {
                 newOrder.setRoom(room);
                 orderRepository.save(newOrder);
             } else {
-                throw new RuntimeException("Room is already booked");
+                throw new RoomAlreadyBookedException("Room is already booked");
             }
         } else {
             Order newOrder = new Order();
