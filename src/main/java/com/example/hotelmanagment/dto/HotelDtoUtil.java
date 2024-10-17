@@ -21,7 +21,8 @@ public class HotelDtoUtil {
 
     public Hotel toEntity(HotelDto hotelDto) {
         Hotel hotel = new Hotel();
-        hotel.setId(hotelDto.getId());
+        if(hotelDto.getId() != null)
+            hotel.setId(hotelDto.getId());
         hotel.setName(hotelDto.getName());
         hotel.setAddress(hotelDto.getAddress());
         hotel.setPhone(hotelDto.getPhone());

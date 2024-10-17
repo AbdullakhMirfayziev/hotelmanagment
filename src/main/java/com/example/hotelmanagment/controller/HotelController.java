@@ -44,7 +44,7 @@ public class HotelController {
             return ResponseEntity.badRequest().body("Invalid page or size parameters");
         }
 
-        Page<HotelDto> hotels = hotelService.getHotels(page - 1, size);
+        Page<HotelDto> hotels = hotelService.getHotels(size,page - 1);
 
         if (hotels.isEmpty()) {
             return ResponseEntity.noContent().build();

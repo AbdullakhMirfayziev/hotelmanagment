@@ -8,6 +8,7 @@ import com.example.hotelmanagment.response.ResetPasswordRequest;
 import com.example.hotelmanagment.service.UserService;
 import com.example.hotelmanagment.serviceImpl.EmailService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -90,4 +91,32 @@ public class AuthController {
         emailService.resetPassword(request.getToken(), request.getNewPassword());
         return ResponseEntity.ok("Password reset successfully");
     }
+
+    @Operation(summary = "Delete user", description = "Delete user from database with ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User deleted successfully",
+                    content = @Content(schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUser(@Parameter(description = "User ID", required = true, example = "1")
+                                             @PathVariable Long id) {
+        userService.deleteUser(id);
+
+        return ResponseEntity.ok("User deleted successfully");
+    }
+
+    @Operation(summary = "Update user", description = "Updates an existing user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User updated successfully"),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
+    @PutMapping
+    public ResponseEntity<?> updateUser(@Valid @RequestBody UserDto userDto) {
+        userService.updateUser(userDto);
+
+        return ResponseEntity.ok("User updated successfully");
+    }
+
+
 }
