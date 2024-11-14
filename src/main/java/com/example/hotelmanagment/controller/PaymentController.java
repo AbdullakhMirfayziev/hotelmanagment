@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -31,7 +30,7 @@ public class PaymentController {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list of payments",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = Map.class))),
-            @ApiResponse(responseCode = "204", description = "No payments found"),
+            @ApiResponse(responseCode = "404", description = "No payments found"),
             @ApiResponse(responseCode = "400", description = "Invalid page or size parameters")
     })
     @GetMapping
@@ -123,6 +122,7 @@ public class PaymentController {
 
         return ResponseEntity.ok("Payment deleted successfully");
     }
+
 
 
 }

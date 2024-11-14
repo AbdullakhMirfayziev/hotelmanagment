@@ -3,9 +3,11 @@ package com.example.hotelmanagment.controller;
 import com.example.hotelmanagment.dto.CsvExportUtil;
 import com.example.hotelmanagment.dto.HotelDto;
 import com.example.hotelmanagment.dto.OrderDto;
+import com.example.hotelmanagment.dto.RoomDto;
 import com.example.hotelmanagment.dto.UserDto;
 import com.example.hotelmanagment.service.HotelService;
 import com.example.hotelmanagment.service.OrderService;
+import com.example.hotelmanagment.service.RoomService;
 import com.example.hotelmanagment.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,6 +38,7 @@ public class AdminPanelController {
     private CsvExportUtil csvExportUtil;
     private HotelService hotelService;
     private OrderService orderService;
+    private RoomService roomService;
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     @Operation(summary = "Export users data", description = "Exports all users' data in CSV format")
@@ -124,6 +128,31 @@ public class AdminPanelController {
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .contentLength(csvBytes.length)
                 .body(resource);
+    }
+
+    @GetMapping("/export/rooms")
+    public ResponseEntity<?> exportRooms() throws IOException {
+        List<RoomDto> rooms = roomService.getAllRooms();
+
+        List<String> headers = Arrays.asList("ID", "Number", "Category", "Price", "Avarage Rating");
+        List<List<String>> data = rooms.stream()
+                .map(room -> Arrays.asList(
+                        String.valueOf(room.getId()),
+                        String.valueOf(room.getNumber()),
+                        room.getCategory().name(),
+                        String.valueOf(room.getPrice()),
+                        String.valueOf(room.getAvrgRating())
+                        ))
+                .collect(Collectors.toList());
+
+        byte[] csvBytes = csvExportUtil.exportToCsv(headers, data);
+        ByteArrayResource resource = new ByteArrayResource(csvBytes);
+
+        return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=rooms.cvs")
+                        .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                        .contentLength(csvBytes.length)
+                        .body(resource);
     }
 
 }

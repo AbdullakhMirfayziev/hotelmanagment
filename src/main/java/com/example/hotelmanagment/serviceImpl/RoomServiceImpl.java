@@ -65,21 +65,32 @@ public class RoomServiceImpl implements RoomService {
     public List<RoomDto> getAllRooms() {
         List<Room> rooms = roomRepository.findAll();
 
-        return dtoUtil.toDto(rooms);
+        List<RoomDto> roomDtos = dtoUtil.toDto(rooms);
+
+        roomDtos.forEach(room -> room.setAvrgRating(getAvrgRatingByRoomId(room.getId())));
+
+        return roomDtos;
     }
 
     @Override
     public RoomDto getRoomById(long id) {
         Room room = roomRepository.findById(id).orElseThrow(() -> new RuntimeException("room not found"));
 
-        return dtoUtil.toDto(room);
+        RoomDto roomDto = dtoUtil.toDto(room);
+        roomDto.setAvrgRating(id);
+
+        return roomDto;
     }
 
     @Override
     public List<RoomDto> getAllRoomsByHotelId(long hotelId) {
         List<Room> rooms = roomRepository.findByHotelId(hotelId);
 
-        return dtoUtil.toDto(rooms);
+        List<RoomDto> roomDtos = dtoUtil.toDto(rooms);
+
+        roomDtos.forEach(room -> room.setAvrgRating(getAvrgRatingByRoomId(room.getId())));
+
+        return roomDtos;    
     }
 
     @Override
@@ -88,6 +99,21 @@ public class RoomServiceImpl implements RoomService {
 
         Page<Room> rooms = roomRepository.findAll(pageable);
 
-        return rooms.map(dtoUtil::toDto);
+        return rooms.map(room -> {
+            RoomDto dto = dtoUtil.toDto(room);
+            dto.setAvrgRating(getAvrgRatingByRoomId(room.getId()));
+            return dto;
+        });
+    }
+
+    private double getAvrgRatingByRoomId(long roomId) {
+        List<Review> reviews = reviewRepository.findByRoomId(roomId);
+
+        double avrgRating = reviews.stream()
+                                    .mapToInt(Review::getRating)
+                                    .average()
+                                    .orElse(0.0);
+
+        return avrgRating;
     }
 }
