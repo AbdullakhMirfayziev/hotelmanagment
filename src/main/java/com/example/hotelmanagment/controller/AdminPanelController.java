@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -55,7 +54,7 @@ public class AdminPanelController {
                 .map(user -> Arrays.asList(
                         String.valueOf(user.getId()),
                         user.getFullName(),
-                        user.getEmail(),
+                        user.getEmail(), 
                         user.getPhone()
                 ))
                 .collect(Collectors.toList());

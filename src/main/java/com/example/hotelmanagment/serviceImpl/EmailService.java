@@ -3,7 +3,6 @@ package com.example.hotelmanagment.serviceImpl;
 import com.example.hotelmanagment.entity.User;
 import com.example.hotelmanagment.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,7 +17,6 @@ public class EmailService {
     private final JavaMailSender mailSender;
     private PasswordEncoder passwordEncoder;
     private UserRepository userRepository;
-
 
     public void sendVerificationEmail(String to, String code) {
         SimpleMailMessage message = new SimpleMailMessage();
@@ -67,6 +65,5 @@ public class EmailService {
         message.setText("To reset your password, click the link below:\n" + resetLink);
         mailSender.send(message);
     }
-
 
 }
